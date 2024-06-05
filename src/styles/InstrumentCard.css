@@ -1,0 +1,49 @@
+.instrument-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+  }
+  
+  .instrument-card img {
+    height: auto;
+    width: 16%;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 16px;
+  }
+  .costo-envio-gratis {
+    color: rgb(5, 121, 5);
+  }
+  
+  .costo-envio-pago {
+    color: rgb(253, 198, 96);
+  }
+  
+  
+  .instrument-card h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .instrument-card p {
+    margin: 4px 0;
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .instrument-card .instrument-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 75%;
+  }
+  

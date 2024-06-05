@@ -1,0 +1,34 @@
+.home-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .home-title {
+    font-size: 3em;
+    color: #333;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .home-slider {
+    width: 80%;
+    margin: 0 auto 20px auto;
+    text-align: center;
+
+}
+  
+  .home-slider img {
+    width: 40%;
+    height: auto;
+    border-radius: 10px;
+}
+  
+  .home-description {
+    font-size: 1.2em;
+    color: #666;
+    width: 80%;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-family: 'Arial', sans-serif;
+  }
+  
