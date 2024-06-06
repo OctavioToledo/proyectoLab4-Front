@@ -1,0 +1,55 @@
+.instrument-grid-container {
+    padding: 20px;
+  }
+  
+  .instrument-grid {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .instrument-grid th, .instrument-grid td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .instrument-grid th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+  
+  .instrument-grid .btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .instrument-grid .btn-modificar {
+    background-color: #007bff;
+  }
+  
+  .instrument-grid .btn-modificar:hover {
+    background-color: #0056b3;
+  }
+  
+  .instrument-grid .btn-eliminar {
+    background-color: #dc3545;
+  }
+  
+  .instrument-grid .btn-eliminar:hover {
+    background-color: #c82333;
+  }
+  
+  .instrument-grid .btn-agregar {
+    background-color: #007bff;
+    margin-bottom: 10px;
+  }
+  
+  .instrument-grid .btn-agregar:hover {
+    background-color: #0056b3;
+  }
+  
