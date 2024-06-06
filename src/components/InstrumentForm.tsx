@@ -180,10 +180,11 @@ const InstrumentForm: React.FC<InstrumentFormProps> = () => {
             required
           >
             <option value="">Seleccione una categoría</option>
-            <option value="Cuerda">Cuerda</option>
+            <option value="Cuerdas">Cuerda</option>
             <option value="Viento">Viento</option>
-            <option value="Percusión">Percusión</option>
+            <option value="Percusion">Percusión</option>
             <option value="Teclado">Teclado</option>
+            <option value="Idiofono">Idiofono</option>
           </select>
           {errors.categoria && <span className="error-text">Este campo es requerido.</span>}
         </div>

@@ -52,4 +52,8 @@
   .instrument-grid .btn-agregar:hover {
     background-color: #0056b3;
   }
-  
+.filter-container{
+    margin: 5px;
+    padding: 5px;
+    
+  }

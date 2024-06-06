@@ -1,4 +1,3 @@
-// InstrumentGrid.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/InstrumentGrid.css";
@@ -16,6 +15,7 @@ interface Instrument {
 
 const InstrumentGrid: React.FC = () => {
   const [instrumentos, setInstrumentos] = useState<Instrument[]>([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,12 +37,9 @@ const InstrumentGrid: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/instrumentos/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:8080/api/instrumentos/${id}`, {
+        method: "DELETE",
+      });
       if (!response.ok) {
         throw new Error("Error al eliminar el instrumento");
       }
@@ -66,8 +63,13 @@ const InstrumentGrid: React.FC = () => {
     navigate("/instrumentos/nuevo");
   };
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCategoriaSeleccionada(e.target.value);
+  };
+
   const filteredInstrumentos = instrumentos.filter(
-    (instrumento) => !instrumento.eliminado
+    (instrumento) =>
+      !instrumento.eliminado && (categoriaSeleccionada === "" || instrumento.categoria === categoriaSeleccionada)
   );
 
   return (
@@ -75,6 +77,17 @@ const InstrumentGrid: React.FC = () => {
       <button className="btn btn-agregar" onClick={handleNew}>
         Agregar Nuevo Instrumento
       </button>
+      <div className="filter-container">
+        <label htmlFor="categoria">Filtrar por categoría:</label>
+        <select id="categoria" value={categoriaSeleccionada} onChange={handleCategoryChange}>
+          <option value="">Todas</option>
+          <option value="Cuerdas">Cuerdas</option>
+          <option value="Viento">Viento</option>
+          <option value="Percusion">Percusión</option>
+          <option value="Teclado">Teclado</option>
+          <option value="Idiofono">Idiófono</option>
+        </select>
+      </div>
       <table className="instrument-grid">
         <thead>
           <tr>
