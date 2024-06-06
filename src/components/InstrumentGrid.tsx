@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/InstrumentGrid.css';
+// InstrumentGrid.tsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/InstrumentGrid.css";
 
 interface Instrument {
   id: string;
@@ -10,6 +11,7 @@ interface Instrument {
   categoria: string;
   costoEnvio: string;
   descripcion: string;
+  eliminado: boolean;
 }
 
 const InstrumentGrid: React.FC = () => {
@@ -19,14 +21,14 @@ const InstrumentGrid: React.FC = () => {
   useEffect(() => {
     const fetchInstrumentos = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/instrumentos');
+        const response = await fetch("http://localhost:8080/api/instrumentos");
         if (!response.ok) {
-          throw new Error('Error al obtener los instrumentos');
+          throw new Error("Error al obtener los instrumentos");
         }
         const data = await response.json();
         setInstrumentos(data);
       } catch (error) {
-        console.error('Error al obtener los instrumentos:', error);
+        console.error("Error al obtener los instrumentos:", error);
       }
     };
 
@@ -35,24 +37,42 @@ const InstrumentGrid: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/instrumentos/${id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/instrumentos/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
-        throw new Error('Error al eliminar el instrumento');
+        throw new Error("Error al eliminar el instrumento");
       }
-      setInstrumentos(instrumentos.filter((instrumento) => instrumento.id !== id));
+      setInstrumentos((prevInstrumentos) =>
+        prevInstrumentos.map((instrumento) =>
+          instrumento.id === id
+            ? { ...instrumento, eliminado: true }
+            : instrumento
+        )
+      );
     } catch (error) {
-      console.error('Error al eliminar el instrumento:', error);
+      console.error("Error al eliminar el instrumento:", error);
     }
   };
 
+  const handleEdit = (instrumento: Instrument) => {
+    navigate(`/instrumentos/nuevo/${instrumento.id}`); // Navegar a la página de edición del instrumento
+  };
+
+  const handleNew = () => {
+    navigate("/instrumentos/nuevo");
+  };
+
+  const filteredInstrumentos = instrumentos.filter(
+    (instrumento) => !instrumento.eliminado
+  );
+
   return (
     <div className="instrument-grid-container">
-      <button
-        className="btn btn-agregar"
-        onClick={() => navigate('/instrumentos/nuevo')}
-      >
+      <button className="btn btn-agregar" onClick={handleNew}>
         Agregar Nuevo Instrumento
       </button>
       <table className="instrument-grid">
@@ -69,7 +89,7 @@ const InstrumentGrid: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {instrumentos.map((instrumento) => (
+          {filteredInstrumentos.map((instrumento) => (
             <tr key={instrumento.id}>
               <td>{instrumento.id}</td>
               <td>{instrumento.instrumento}</td>
@@ -81,7 +101,7 @@ const InstrumentGrid: React.FC = () => {
               <td>
                 <button
                   className="btn btn-modificar"
-                  onClick={() => navigate(`/instrumentos/editar/${instrumento.id}`)}
+                  onClick={() => handleEdit(instrumento)}
                 >
                   Modificar
                 </button>

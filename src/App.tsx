@@ -18,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/instrumentos" element={<InstrumentList />} />
         <Route path="/instrumentos/grid" element={<InstrumentGrid />} />
         <Route path="/instrumentos/nuevo" element={<InstrumentForm />} />
+        <Route path="/instrumentos/nuevo/:id" element={<InstrumentForm />} />
         <Route path="/instrumentos/:id" element={<InstrumentDetail />} />
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>

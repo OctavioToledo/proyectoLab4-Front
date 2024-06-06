@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// InstrumentForm.tsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../styles/InstrumentForm.css';
 
 interface InstrumentFormProps {}
 
+interface Instrument {
+  instrumento: string;
+  modelo: string;
+  precio: string;
+  categoria: string;
+  costoEnvio: string;
+  descripcion: string;
+}
+
 const InstrumentForm: React.FC<InstrumentFormProps> = () => {
-  const [instrument, setInstrument] = useState({
-    id: '',
+  const { id } = useParams(); // Obtener el ID del instrumento de los parámetros de la URL
+  const navigate = useNavigate();
+
+  const [instrument, setInstrument] = useState<Instrument>({
     instrumento: '',
     modelo: '',
     precio: '',
@@ -24,7 +36,25 @@ const InstrumentForm: React.FC<InstrumentFormProps> = () => {
     descripcion: false,
   });
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (id) {
+      // Si hay un ID, obtener los detalles del instrumento para la edición
+      fetchInstrumentDetails(id);
+    }
+  }, [id]);
+
+  const fetchInstrumentDetails = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/instrumentos/${id}`);
+      if (!response.ok) {
+        throw new Error('Error al obtener los detalles del instrumento');
+      }
+      const data = await response.json();
+      setInstrument(data);
+    } catch (error) {
+      console.error('Error al obtener los detalles del instrumento:', error);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -44,49 +74,64 @@ const InstrumentForm: React.FC<InstrumentFormProps> = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     // Validar campos
     const newErrors = {
       instrumento: instrument.instrumento.trim() === '',
       modelo: instrument.modelo.trim() === '',
-      precio: instrument.precio.trim() === '',
+      precio: (typeof instrument.precio === 'string' ? instrument.precio.trim() : '').trim() === '', // Verifica si precio es una cadena de texto antes de llamar a trim()
       categoria: instrument.categoria.trim() === '',
       costoEnvio: instrument.costoEnvio.trim() === '',
       descripcion: instrument.descripcion.trim() === '',
     };
-
+  
     setErrors(newErrors);
-
+  
     const hasErrors = Object.values(newErrors).some((error) => error);
-
+  
     if (hasErrors) {
       return;
     }
-
+  
     try {
-      const response = await fetch('http://localhost:8080/api/instrumentos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(instrument),
-      });
-      if (!response.ok) {
-        throw new Error('Error al crear el instrumento');
+      let response;
+      if (id !== undefined && id !== '0') {
+        // Si hay un ID válido, actualizar el instrumento existente (PUT)
+        response = await fetch(`http://localhost:8080/api/instrumentos/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(instrument),
+        });
+      } else {
+        // Si no hay ID válido, crear un nuevo instrumento (POST)
+        response = await fetch('http://localhost:8080/api/instrumentos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(instrument),
+        });
       }
-      navigate('/instrumentos');
+  
+      if (!response.ok) {
+        throw new Error('Error al guardar el instrumento');
+      }
+  
+      navigate('/instrumentos/grid');
     } catch (error) {
-      console.error('Error al crear el instrumento:', error);
+      console.error('Error al guardar el instrumento:', error);
     }
   };
-
+  
   const handleCancel = () => {
     navigate('/instrumentos/grid');
   };
 
   return (
     <div className="instrument-form-container">
-      <h2>Agregar Nuevo Instrumento</h2>
+      <h2>{id ? 'Modificar Instrumento' : 'Agregar Nuevo Instrumento'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="instrumento">Nombre</label>
@@ -100,6 +145,7 @@ const InstrumentForm: React.FC<InstrumentFormProps> = () => {
           />
           {errors.instrumento && <span className="error-text">Este campo es requerido.</span>}
         </div>
+        
         <div className="form-group">
           <label htmlFor="modelo">Modelo</label>
           <input

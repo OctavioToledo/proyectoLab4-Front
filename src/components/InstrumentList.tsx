@@ -13,6 +13,7 @@ interface Instrument {
   cantidadVendida: string;
   descripcion: string;
   categoria: string;
+  eliminado: boolean;
 }
 
 const InstrumentList: React.FC = () => {
@@ -35,9 +36,11 @@ const InstrumentList: React.FC = () => {
     fetchInstrumentos();
   }, []);
 
+  const filteredInstrumentos = instrumentos.filter((instrumento) => !instrumento.eliminado);
+
   return (
     <div className="instrument-list">
-      {instrumentos.map((instrumento) => (
+      {filteredInstrumentos.map((instrumento) => (
         <InstrumentCard key={instrumento.id} {...instrumento} />
       ))}
     </div>
