@@ -27,4 +27,17 @@
   .navbar-item a:hover {
     text-decoration: underline;
   }
+  .cart-link {
+    position: relative;
+  }
   
+  .cart-badge {
+    background-color: rgb(183, 1, 255);
+    color: white;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+    position: absolute;
+    top: -10px;
+    right: -20px;
+  }

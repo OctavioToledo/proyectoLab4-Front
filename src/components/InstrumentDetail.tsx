@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import "../styles/InstrumentDetail.css";
 
 interface Instrument {
@@ -13,11 +14,11 @@ interface Instrument {
   cantidadVendida: string;
   descripcion: string;
   categoria: string;
-  
 }
 
 const InstrumentDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { cart, addToCart } = useCart();
   const [instrumento, setInstrumento] = useState<Instrument | null>(null);
 
   useEffect(() => {
@@ -36,6 +37,35 @@ const InstrumentDetail: React.FC = () => {
 
     fetchInstrumento();
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (!instrumento) return;
+
+    // Verificar si el instrumento ya está en el carrito
+    const isInCart = cart.some((item) => item.id === instrumento.id);
+    
+    // Si el instrumento ya está en el carrito, mostrar una alerta
+    if (isInCart) {
+      alert("El instrumento ya está en el carrito.");
+      return;
+    }
+
+    // Si el instrumento no está en el carrito, agregarlo
+    addToCart({
+      id: instrumento.id,
+      instrumento: instrumento.instrumento,
+      marca: instrumento.marca,
+      modelo: instrumento.modelo,
+      imagen: instrumento.imagen,
+      precio: parseFloat(instrumento.precio), // Asegúrate de convertir a número si precio es string
+      costoEnvio: instrumento.costoEnvio,
+      cantidadVendida: parseInt(instrumento.cantidadVendida, 10),
+      descripcion: instrumento.descripcion,
+      categoria: instrumento.categoria,
+      eliminado: false,
+      quantity: 1, // Establecemos la cantidad inicial en 1
+    });
+  };
 
   if (!instrumento) {
     return <div>Instrumento no encontrado</div>;
@@ -67,7 +97,7 @@ const InstrumentDetail: React.FC = () => {
         <p><b>Precio:</b> ${instrumento.precio}</p>
         <p style={costoEnvioStyle}><b>Costo de Envío:</b> {costoEnvioTexto}</p>
         <p><b>Cantidad Vendida: </b>{instrumento.cantidadVendida}</p>
-        <button className="add-to-cart-button">Agregar al carrito</button>
+        <button className="add-to-cart-button" onClick={handleAddToCart}>Agregar al carrito</button>
       </div>
     </div>
   );

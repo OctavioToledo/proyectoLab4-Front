@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import InstrumentCard from "./InstrumentCard";
 import "../styles/InstrumentList.css";
 
-interface Instrument {
+export interface Instrument {
   id: string;
   instrumento: string;
   marca: string;
@@ -14,6 +14,7 @@ interface Instrument {
   descripcion: string;
   categoria: string;
   eliminado: boolean;
+
 }
 
 const InstrumentList: React.FC = () => {
@@ -36,7 +37,9 @@ const InstrumentList: React.FC = () => {
     fetchInstrumentos();
   }, []);
 
-  const filteredInstrumentos = instrumentos.filter((instrumento) => !instrumento.eliminado);
+  const filteredInstrumentos = instrumentos.filter(
+    (instrumento) => !instrumento.eliminado
+  );
 
   return (
     <div className="instrument-list">
