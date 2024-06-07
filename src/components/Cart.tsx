@@ -4,6 +4,7 @@ import "../styles/Cart.css";
 import { Instrument } from "../Interface/types";
 import { useNavigate } from "react-router-dom";
 import CheckoutMP from "./CheckoutMP";
+import Pedido from "../Interface/Pedido";
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, clearCart, setCart } = useCart();
@@ -33,28 +34,37 @@ const Cart: React.FC = () => {
 
   const total = cart.reduce((acc, item) => acc + item.precio * item.quantity, 0);
 
-  const handleSaveCart = async () => {
+  const savePedido = async (cartData: { id: string, quantity: number, precio: number }[]): Promise<Pedido> => {
     try {
-
-        const cartData = cart.map((item) => ({
-            id: item.id,
-            quantity: item.quantity,
-            precio: item.precio,
-          }));
-
       const response = await fetch("http://localhost:8080/api/pedidos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(cartData),
-      })
-      ;
+      });
       if (!response.ok) {
         throw new Error("Error al guardar el pedido");
-      }
+      }        console.log("Se guardo el pedido correctamente")
+
 
       const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error al guardar el pedido:", error);
+      throw error;
+    }
+  };
+
+  const handleSaveCart = async () => {
+    try {
+      const cartData = cart.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+        precio: item.precio,
+      }));
+
+      const data = await savePedido(cartData);
       alert(`El pedido con id ${data.id} se guardó correctamente`);
       //clearCart();
       navigate("/cart");
@@ -92,13 +102,13 @@ const Cart: React.FC = () => {
                 </div>
               </li>
             ))}
-          <p className="total-label">Total: ${total.toFixed(2)}</p>
+            <p className="total-label">Total: ${total.toFixed(2)}</p>
           </ul>
           <button onClick={handleSaveCart} className="buy-btn">Comprar</button>
           <button onClick={handleClearCart} className="clear-btn">
             Vaciar Carrito
           </button>
-          <CheckoutMP montoCarrito={total} ></CheckoutMP>
+          <CheckoutMP savePedido={savePedido} cart={cart} total={total} />
         </div>
       )}
     </div>
@@ -106,4 +116,3 @@ const Cart: React.FC = () => {
 };
 
 export default Cart;
-    
