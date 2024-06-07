@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import "../styles/Cart.css";
 import { Instrument } from "../Interface/types";
 import { useNavigate } from "react-router-dom";
+import CheckoutMP from "./CheckoutMP";
 
 const Cart: React.FC = () => {
   const { cart, removeFromCart, clearCart, setCart } = useCart();
@@ -55,8 +56,8 @@ const Cart: React.FC = () => {
 
       const data = await response.json();
       alert(`El pedido con id ${data.id} se guardó correctamente`);
-      clearCart();
-      navigate("/instrumentos");
+      //clearCart();
+      navigate("/cart");
     } catch (error) {
       console.error("Error al guardar el pedido:", error);
     }
@@ -97,6 +98,7 @@ const Cart: React.FC = () => {
           <button onClick={handleClearCart} className="clear-btn">
             Vaciar Carrito
           </button>
+          <CheckoutMP montoCarrito={total} ></CheckoutMP>
         </div>
       )}
     </div>
