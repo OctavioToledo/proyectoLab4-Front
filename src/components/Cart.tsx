@@ -5,7 +5,7 @@ import { Instrument } from "../Interface/types";
 import { useNavigate } from "react-router-dom";
 
 const Cart: React.FC = () => {
-  const { cart, addToCart, removeFromCart, clearCart, setCart } = useCart();
+  const { cart, removeFromCart, clearCart, setCart } = useCart();
   const navigate = useNavigate();
 
   const increaseQuantity = (id: string) => {
@@ -34,16 +34,25 @@ const Cart: React.FC = () => {
 
   const handleSaveCart = async () => {
     try {
+
+        const cartData = cart.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+            precio: item.precio,
+          }));
+
       const response = await fetch("http://localhost:8080/api/pedidos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(cart),
-      });
+        body: JSON.stringify(cartData),
+      })
+      ;
       if (!response.ok) {
         throw new Error("Error al guardar el pedido");
       }
+
       const data = await response.json();
       alert(`El pedido con id ${data.id} se guardó correctamente`);
       clearCart();
@@ -82,8 +91,8 @@ const Cart: React.FC = () => {
                 </div>
               </li>
             ))}
-          </ul>
           <p className="total-label">Total: ${total.toFixed(2)}</p>
+          </ul>
           <button onClick={handleSaveCart} className="buy-btn">Comprar</button>
           <button onClick={handleClearCart} className="clear-btn">
             Vaciar Carrito
