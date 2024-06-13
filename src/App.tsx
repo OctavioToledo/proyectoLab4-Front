@@ -1,6 +1,6 @@
-import React from "react";
-import InstrumentList from "./components/InstrumentList";
+import React, { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import InstrumentList from "./components/InstrumentList";
 import InstrumentDetail from "./components/InstrumentDetail";
 import Home from "./components/Home";
 import DondeEstamos from "./components/DondeEstamos";
@@ -9,28 +9,93 @@ import InstrumentGrid from "./components/InstrumentGrid";
 import InstrumentForm from "./components/InstrumentForm";
 import { CartProvider } from "./context/CartContext";
 import Cart from "./components/Cart";
-
+import Login from "./components/Login";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App: React.FC = () => {
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  const handleLogin = (role: string) => {
+    setUserRole(role);
+  };
+
+  const handleLogout = () => {
+    setUserRole(null);
+    // Lógica para limpiar la sesión o hacer logout en tu backend si es necesario
+  };
+
   return (
-    <>
-      <CartProvider>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/donde-estamos" element={<DondeEstamos />} />
-          <Route path="/cart" element={<Cart />} />
+    <CartProvider>
+      <NavBar userRole={userRole} onLogout={handleLogout} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/donde-estamos" element={<DondeEstamos />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        
+        <Route 
+          path="/instrumentos" 
+          element={
+            <PrivateRoute 
+              element={<InstrumentList />} 
+              userRole={userRole} 
+              allowedRoles={["Admin", "Operador"]} 
+            />
+          } 
+        />
+        <Route 
+          path="/instrumentos/:id" 
+          element={
+            <PrivateRoute 
+              element={<InstrumentDetail />} 
+              userRole={userRole} 
+              allowedRoles={["Admin", "Operador"]} 
+            />
+          } 
+        />
+        <Route 
+          path="/cart" 
+          element={
+            <PrivateRoute 
+              element={<Cart />} 
+              userRole={userRole} 
+              allowedRoles={["Admin", "Operador"]} 
+            />
+          } 
+        />
 
-          <Route path="/instrumentos" element={<InstrumentList />} />
-          <Route path="/instrumentos/:id" element={<InstrumentDetail />} />
-
-          <Route path="/instrumentos/grid" element={<InstrumentGrid />} />
-          <Route path="/instrumentos/nuevo" element={<InstrumentForm />} />
-          <Route path="/instrumentos/nuevo/:id" element={<InstrumentForm />} />
-          <Route path="/*" element={<Navigate to="/" />} />
-        </Routes>
-      </CartProvider>
-    </>
+        <Route 
+          path="/instrumentos/grid" 
+          element={
+            <PrivateRoute 
+              element={<InstrumentGrid userRole={userRole} />} 
+              userRole={userRole} 
+              allowedRoles={["Admin"]} 
+            />
+          } 
+        />
+        <Route 
+          path="/instrumentos/nuevo" 
+          element={
+            <PrivateRoute 
+              element={<InstrumentForm />} 
+              userRole={userRole} 
+              allowedRoles={["Admin"]} 
+            />
+          } 
+        />
+        <Route 
+          path="/instrumentos/nuevo/:id" 
+          element={
+            <PrivateRoute 
+              element={<InstrumentForm />} 
+              userRole={userRole} 
+              allowedRoles={["Admin"]} 
+            />
+          } 
+        />
+        <Route path="/*" element={<Navigate to="/login" />} />
+      </Routes>
+    </CartProvider>
   );
 };
 

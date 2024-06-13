@@ -13,7 +13,11 @@ interface Instrument {
   eliminado: boolean;
 }
 
-const InstrumentGrid: React.FC = () => {
+interface InstrumentGridProps {
+  userRole: string | null; // Propiedad userRole recibida desde PrivateRoute
+}
+
+const InstrumentGrid: React.FC<InstrumentGridProps> = ({ userRole }) => {
   const [instrumentos, setInstrumentos] = useState<Instrument[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>("");
   const navigate = useNavigate();
@@ -74,9 +78,11 @@ const InstrumentGrid: React.FC = () => {
 
   return (
     <div className="instrument-grid-container">
-      <button className="btn btn-agregar" onClick={handleNew}>
-        Agregar Nuevo Instrumento
-      </button>
+      {userRole === "Admin" && (
+        <button className="btn btn-agregar" onClick={handleNew}>
+          Agregar Nuevo Instrumento
+        </button>
+      )}
       <div className="filter-container">
         <label htmlFor="categoria">Filtrar por categoría:</label>
         <select id="categoria" value={categoriaSeleccionada} onChange={handleCategoryChange}>
@@ -112,18 +118,22 @@ const InstrumentGrid: React.FC = () => {
               <td>{instrumento.costoEnvio}</td>
               <td>{instrumento.descripcion}</td>
               <td>
-                <button
-                  className="btn btn-modificar"
-                  onClick={() => handleEdit(instrumento)}
-                >
-                  Modificar
-                </button>
-                <button
-                  className="btn btn-eliminar"
-                  onClick={() => handleDelete(instrumento.id)}
-                >
-                  Eliminar
-                </button>
+                {userRole === "Admin" && (
+                  <>
+                    <button
+                      className="btn btn-modificar"
+                      onClick={() => handleEdit(instrumento)}
+                    >
+                      Modificar
+                    </button>
+                    <button
+                      className="btn btn-eliminar"
+                      onClick={() => handleDelete(instrumento.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
