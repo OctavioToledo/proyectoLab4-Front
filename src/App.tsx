@@ -11,6 +11,7 @@ import { CartProvider } from "./context/CartContext";
 import Cart from "./components/Cart";
 import Login from "./components/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import Dashboard from "./components/Dashboard";
 
 const App: React.FC = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -37,6 +38,16 @@ const App: React.FC = () => {
           element={
             <PrivateRoute 
               element={<InstrumentList />} 
+              userRole={userRole} 
+              allowedRoles={["Admin", "Operador"]} 
+            />
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            <PrivateRoute 
+              element={<Dashboard />} 
               userRole={userRole} 
               allowedRoles={["Admin", "Operador"]} 
             />

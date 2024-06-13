@@ -44,6 +44,9 @@ const NavBar: React.FC<NavBarProps> = ({ userRole, onLogout }) => {
             Logout
           </li>
         )}
+        <li className="navbar-item">
+          <Link to="/dashboard">Graficos</Link>
+        </li>
       </ul>
     </nav>
   );
