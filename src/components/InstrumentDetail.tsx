@@ -67,6 +67,29 @@ const InstrumentDetail: React.FC = () => {
     });
   };
 
+  const handleGeneratePdf = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/instrumentos/${id}/reportePdf`, {
+        method: "GET",
+        headers: {
+          Accept: "application/pdf",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error al generar el PDF");
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `instrumento_detalle_${id}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
   if (!instrumento) {
     return <div>Instrumento no encontrado</div>;
   }
@@ -98,6 +121,7 @@ const InstrumentDetail: React.FC = () => {
         <p style={costoEnvioStyle}><b>Costo de Envío:</b> {costoEnvioTexto}</p>
         <p><b>Cantidad Vendida: </b>{instrumento.cantidadVendida}</p>
         <button className="add-to-cart-button" onClick={handleAddToCart}>Agregar al carrito</button>
+        <button className="generate-pdf-button" onClick={handleGeneratePdf}>Generar PDF</button>
       </div>
     </div>
   );

@@ -55,4 +55,16 @@
   .add-to-cart-button:hover {
     background-color: #0056b3;
   }
-  
+.generate-pdf-button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #ff6363;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}  
+.generate-pdf-button:hover{
+  background-color: #fc443e;
+}
