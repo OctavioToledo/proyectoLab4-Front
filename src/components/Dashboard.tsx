@@ -1,13 +1,18 @@
-
+import React, { useState } from 'react';
 import BarChart from './BarChart';
 import PieChart from './PieChart';
+import DateRangeModal from '../Modal/DateRangeModal';
 import "../styles/Dashboard.css";
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const generarReporte = async () => {
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const generarReporte = async (startDate: string, endDate: string) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/pedidos/reporteExcel`);
+      const response = await fetch(`http://localhost:8080/api/pedidos/reporteExcel?startDate=${startDate}&endDate=${endDate}`);
       if (!response.ok) {
         throw new Error('Error al generar el reporte');
       }
@@ -31,8 +36,10 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <h1>Dashboard</h1>
-      <button className="report-button" onClick={generarReporte}>Generar Reporte Excel</button>
+      <button className="report-button" onClick={openModal}>Generar Reporte Excel</button>
       
+      <DateRangeModal isOpen={isModalOpen} onClose={closeModal} onGenerate={generarReporte} />
+
       <section className="chart-section">
         <h2>Pedidos por Mes y Año</h2>
         <BarChart />
@@ -42,7 +49,6 @@ const Dashboard = () => {
         <h2>Pedidos por Instrumento</h2>
         <PieChart />
       </section>
-    
     </div>
   );
 };
